@@ -57,7 +57,9 @@ export const OrderTable = ({
             {columns.map((column) => (
               <td
                 key={`${entry.id}-${column}`}
-                className={column === "price" ? `text-${priceColor}-600` : ""}
+                className={`py-0.5 ${
+                  column === "price" ? `text-${priceColor}-600` : ""
+                }`}
               >
                 {entry[column]}
               </td>
