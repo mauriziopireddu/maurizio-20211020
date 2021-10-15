@@ -9,7 +9,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>Maurizio | 2021-10-17</title>
       </Head>
-      <Component {...pageProps} />
+      <div className="bg-black h-screen text-white">
+        <Component {...pageProps} />
+      </div>
     </>
   );
 };
