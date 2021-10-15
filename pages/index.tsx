@@ -3,23 +3,44 @@ import { Heading } from "components/Heading";
 import { OrderTable } from "components/OrderTable";
 import { useWindowSize } from "hooks";
 import { Spread } from "components/Spread";
+import { ToggleFeed } from "components/ToggleFeed";
 
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
+
+  const BidTable = (
+    <OrderTable
+      type="bid"
+      customColumnsOrder={["total", "size", "price"]}
+      direction={isMobile ? "to right" : "to left"}
+      showHeading={!isMobile}
+    />
+  );
+
+  const AskTable = <OrderTable type="ask" direction="to right" />;
+
   return (
     <>
       <Heading />
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
-        <OrderTable
-          type="bid"
-          customColumnsOrder={["total", "size", "price"]}
-          direction={isMobile ? "to right" : "to left"}
-        />
-        {isMobile && <Spread />}
-        <OrderTable type="ask" showHeading={!isMobile} direction="to right" />
+        {!isMobile && (
+          <>
+            {BidTable}
+            {AskTable}
+          </>
+        )}
+        {isMobile && (
+          <>
+            {AskTable}
+            <Spread />
+            {BidTable}
+          </>
+        )}
       </main>
-      <footer></footer>
+      <footer className="flex my-4">
+        <ToggleFeed />
+      </footer>
     </>
   );
 };
