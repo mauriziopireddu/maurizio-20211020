@@ -1,4 +1,4 @@
-import { useWindowSize } from "hooks";
+import { useWindowSize } from "hooks/useWindowSize";
 
 type Type = "bid" | "ask";
 type Direction = "to left" | "to right";

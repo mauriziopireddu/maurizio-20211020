@@ -1,5 +1,5 @@
 import { Spread } from "components/Spread";
-import { useWindowSize } from "hooks";
+import { useWindowSize } from "hooks/useWindowSize";
 
 export const Heading = () => {
   const { isMobile } = useWindowSize();

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { Heading } from "components/Heading";
 import { OrderTable } from "components/OrderTable";
-import { useWindowSize } from "hooks";
+import { useWindowSize } from "hooks/useWindowSize";
 import { Spread } from "components/Spread";
 import { ToggleFeed } from "components/ToggleFeed";
 import { useCryptoFacilities } from "hooks/useCryptoFacilities";
