@@ -5,6 +5,10 @@ module.exports = {
     extend: {
       colors: {
         black: "#111827",
+        secondary: "#3A404D",
+      },
+      borderWidth: {
+        1: "1px",
       },
     },
   },
