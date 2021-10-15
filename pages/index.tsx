@@ -4,9 +4,11 @@ import { OrderTable } from "components/OrderTable";
 import { useWindowSize } from "hooks";
 import { Spread } from "components/Spread";
 import { ToggleFeed } from "components/ToggleFeed";
+import { useCryptoFacilities } from "hooks/useCryptoFacilities";
 
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
+  const { closeConnection, reopenConnection } = useCryptoFacilities();
 
   const BidTable = (
     <OrderTable
@@ -21,6 +23,12 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <button type="button" onClick={() => closeConnection()}>
+        closeConnection
+      </button>
+      <button type="button" onClick={() => reopenConnection()}>
+        reconnect
+      </button>
       <Heading />
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
