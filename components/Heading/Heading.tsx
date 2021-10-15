@@ -1,10 +1,12 @@
-import React from "react";
+import { Spread } from "components/Spread";
+import { useWindowSize } from "hooks";
 
 export const Heading = () => {
+  const { isMobile } = useWindowSize();
   return (
     <header className="p-4 flex">
       <h1>Order Book</h1>
-      <p className="m-auto text-secondary">Spread: 17.0 (0.05%)</p>
+      {!isMobile && <Spread />}
     </header>
   );
 };
