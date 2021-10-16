@@ -79,7 +79,8 @@ export const OrderTable = ({
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })
-                  : order[column].toLocaleString()}
+                  : //@ts-ignore
+                    order[column].toLocaleString()}
               </td>
             ))}
           </tr>
