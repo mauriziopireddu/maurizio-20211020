@@ -65,9 +65,6 @@ const Home: NextPage = () => {
       <footer className="flex my-4">
         <Button onClick={changeContract}>Toggle Feed</Button>
       </footer>
-      <button type="button" onClick={() => closeConnection()}>
-        closeConnection
-      </button>
     </>
   );
 };
