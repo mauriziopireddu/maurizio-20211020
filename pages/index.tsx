@@ -8,35 +8,30 @@ import { useCryptoFacilities } from "hooks/useCryptoFacilities";
 
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
+  const limit = isMobile ? 12 : 16;
   const { closeConnection, reopenConnection, book } = useCryptoFacilities();
 
   const BidTable = (
     <OrderTable
       type="bid"
       customColumnsOrder={["total", "size", "price"]}
-      direction={isMobile ? "to right" : "to left"}
+      depthDirection={isMobile ? "to right" : "to left"}
       showHeading={!isMobile}
-      orders={book.bids}
+      orders={book.bids.slice(0, limit)}
     />
   );
 
   const AskTable = (
     <OrderTable
       type="ask"
-      direction="to right"
-      orders={book.asks}
+      depthDirection="to right"
+      orders={book.asks.slice(0, limit)}
       reverse={isMobile}
     />
   );
 
   return (
     <>
-      {/* <button type="button" onClick={() => closeConnection()}>
-        closeConnection
-      </button>
-      <button type="button" onClick={() => reopenConnection()}>
-        reconnect
-      </button> */}
       <Heading>{!isMobile && <Spread book={book} />}</Heading>
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
@@ -56,6 +51,12 @@ const Home: NextPage = () => {
       <footer className="flex my-4">
         <ToggleFeed />
       </footer>
+      <button type="button" onClick={() => closeConnection()}>
+        closeConnection
+      </button>
+      <button type="button" onClick={() => reopenConnection()}>
+        reconnect
+      </button>
     </>
   );
 };

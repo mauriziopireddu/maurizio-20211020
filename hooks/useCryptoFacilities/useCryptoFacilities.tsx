@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { Book } from "types";
-import { createBook, MessageData } from "./utils";
+import { createBook, MessageData, updateBook } from "./utils";
 const cryptoFacilitiesEndpoint = "wss://www.cryptofacilities.com/ws/v1";
 
 type CryptoFacilities = {
@@ -16,10 +16,7 @@ type ProductId = "PI_XBTUSD" | "PI_ETHUSD";
 export const useCryptoFacilities = (): CryptoFacilities => {
   const [error, setError] = useState(false);
   const [connected, setConnected] = useState(true);
-  const [book, setBook] = useState<Book>({
-    bids: [],
-    asks: [],
-  });
+  const [book, setBook] = useState<Book>({ bids: [], asks: [] });
 
   const { sendJsonMessage } = useWebSocket(
     cryptoFacilitiesEndpoint,
@@ -39,13 +36,18 @@ export const useCryptoFacilities = (): CryptoFacilities => {
       },
       onMessage: (message) => {
         const data: MessageData = JSON.parse(message.data);
+        if (data.event) {
+          return;
+        }
         if (data.feed === "book_ui_1_snapshot") {
           setBook(createBook(data));
-        } else if (data.feed === "book_ui_1") {
+          return;
         }
-      },
-      filter: (message) => {
-        return true;
+        if (data.feed === "book_ui_1") {
+          const newList = updateBook(book, data);
+          setBook((oldBook) => updateBook(oldBook, data));
+          return;
+        }
       },
     },
     connected

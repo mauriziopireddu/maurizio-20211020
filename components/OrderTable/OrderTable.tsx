@@ -2,21 +2,21 @@ import { useWindowSize } from "hooks/useWindowSize";
 import { Order } from "types";
 
 type Type = "bid" | "ask";
-type Direction = "to left" | "to right";
+type DepthDirection = "to left" | "to right";
 type Column = "total" | "size" | "price";
 
 type Props = {
   type: Type;
   customColumnsOrder?: Column[];
   showHeading?: boolean;
-  direction?: Direction;
+  depthDirection?: DepthDirection;
   orders?: Order[];
   reverse?: boolean;
 };
 
 const defaultColumnsOrder = ["price", "size", "total"];
 
-const depthStyle = (type: Type, size: number, direction: Direction) =>
+const depthStyle = (type: Type, size: number, direction: DepthDirection) =>
   type === "bid"
     ? `linear-gradient(${direction}, #123534 ${size}%, transparent 0%)`
     : `linear-gradient(${direction}, #3D1E28 ${size}%, transparent 0%)`;
@@ -26,15 +26,15 @@ const getDepth = (total: number) => (current: number) =>
 
 export const OrderTable = ({
   type,
-  customColumnsOrder,
+  customColumnsOrder = [],
   showHeading = true,
-  direction = "to left",
+  depthDirection = "to left",
   orders = [],
   reverse = false,
 }: Props) => {
   const priceColor = type === "bid" ? "green" : "red";
   const { isMobile } = useWindowSize();
-  const shouldHaveCustomColumnsOrder = !isMobile && customColumnsOrder?.length;
+  const shouldHaveCustomColumnsOrder = !isMobile && customColumnsOrder.length;
   const columns = shouldHaveCustomColumnsOrder
     ? customColumnsOrder
     : defaultColumnsOrder;
@@ -58,12 +58,12 @@ export const OrderTable = ({
       <tbody>
         {sortedOrders.map((order) => (
           <tr
-            key={order.total}
+            key={order.price}
             style={{
               background: depthStyle(
                 type,
                 getCurrentDepth(order.total),
-                direction
+                depthDirection
               ),
             }}
           >
