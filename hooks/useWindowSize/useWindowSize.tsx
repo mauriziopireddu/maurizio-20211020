@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-interface WindowSize {
+type WindowSize = {
   width: number;
   height: number;
   isMobile: boolean;
-}
+};
 
 const breakpoint = 640;
 
