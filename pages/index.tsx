@@ -32,7 +32,7 @@ const Home: NextPage = () => {
       <button type="button" onClick={() => reopenConnection()}>
         reconnect
       </button> */}
-      <Heading />
+      <Heading>{!isMobile && <Spread book={book} />}</Heading>
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
         {!isMobile && (
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
         {isMobile && (
           <>
             {AskTable}
-            <Spread />
+            <Spread book={book} />
             {BidTable}
           </>
         )}
