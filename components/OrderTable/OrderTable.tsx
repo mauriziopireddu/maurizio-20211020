@@ -1,33 +1,34 @@
 import { useWindowSize } from "hooks/useWindowSize";
+import { Order } from "types";
 
 type Type = "bid" | "ask";
 type Direction = "to left" | "to right";
+type Column = "total" | "size" | "price";
 
 type Props = {
   type: Type;
-  customColumnsOrder?: string[];
+  customColumnsOrder?: Column[];
   showHeading?: boolean;
   direction?: Direction;
+  orders?: Order[];
 };
-
-const values = [
-  { id: 1, total: 1200, size: 1200, price: 34062.5 },
-  { id: 2, total: 1200, size: 1200, price: 34062.5 },
-  { id: 3, total: 1200, size: 1200, price: 34062.5 },
-];
 
 const defaultColumnsOrder = ["price", "size", "total"];
 
-const barStyle = (type: Type, size: number, direction: Direction) =>
+const depthStyle = (type: Type, size: number, direction: Direction) =>
   type === "bid"
     ? `linear-gradient(${direction}, #123534 ${size}%, transparent 0%)`
     : `linear-gradient(${direction}, #3D1E28 ${size}%, transparent 0%)`;
+
+const getDepth = (total: number) => (current: number) =>
+  (current / total) * 100;
 
 export const OrderTable = ({
   type,
   customColumnsOrder,
   showHeading = true,
   direction = "to left",
+  orders = [],
 }: Props) => {
   const priceColor = type === "bid" ? "green" : "red";
   const { isMobile } = useWindowSize();
@@ -35,6 +36,9 @@ export const OrderTable = ({
   const columns = shouldHaveCustomColumnsOrder
     ? customColumnsOrder
     : defaultColumnsOrder;
+
+  const highestTotal = orders[orders.length - 1]?.total;
+  const getCurrentDepth = getDepth(highestTotal);
 
   return (
     <table className="w-screen text-center table-fixed">
@@ -49,19 +53,25 @@ export const OrderTable = ({
       </thead>
 
       <tbody>
-        {values.map((entry) => (
+        {orders.map((order) => (
           <tr
-            key={entry.id}
-            style={{ background: barStyle(type, 20, direction) }}
+            key={order.total}
+            style={{
+              background: depthStyle(
+                type,
+                getCurrentDepth(order.total),
+                direction
+              ),
+            }}
           >
             {columns.map((column) => (
               <td
-                key={`${entry.id}-${column}`}
+                key={`${order.total}-${column}`}
                 className={`py-0.5 ${
                   column === "price" ? `text-${priceColor}-600` : ""
                 }`}
               >
-                {entry[column]}
+                {order[column].toLocaleString()}
               </td>
             ))}
           </tr>

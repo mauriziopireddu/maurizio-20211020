@@ -1,11 +1,14 @@
 import { useState } from "react";
 import useWebSocket from "react-use-websocket";
+import { Book } from "types";
+import { createBook, MessageData } from "./utils";
 const cryptoFacilitiesEndpoint = "wss://www.cryptofacilities.com/ws/v1";
 
 type CryptoFacilities = {
   error: boolean;
   closeConnection: () => void;
   reopenConnection: () => void;
+  book: Book;
 };
 
 type ProductId = "PI_XBTUSD" | "PI_ETHUSD";
@@ -13,12 +16,16 @@ type ProductId = "PI_XBTUSD" | "PI_ETHUSD";
 export const useCryptoFacilities = (): CryptoFacilities => {
   const [error, setError] = useState(false);
   const [connected, setConnected] = useState(true);
+  const [book, setBook] = useState<Book>({
+    bids: [],
+    asks: [],
+  });
 
-  const ws = useWebSocket(
+  const { sendJsonMessage } = useWebSocket(
     cryptoFacilitiesEndpoint,
     {
       onOpen: () => {
-        ws.sendJsonMessage({
+        sendJsonMessage({
           event: "subscribe",
           feed: "book_ui_1",
           product_ids: ["PI_XBTUSD"],
@@ -31,7 +38,14 @@ export const useCryptoFacilities = (): CryptoFacilities => {
         setError(true);
       },
       onMessage: (message) => {
-        console.log(message);
+        const data: MessageData = JSON.parse(message.data);
+        if (data.feed === "book_ui_1_snapshot") {
+          setBook(createBook(data));
+        } else if (data.feed === "book_ui_1") {
+        }
+      },
+      filter: (message) => {
+        return true;
       },
     },
     connected
@@ -41,5 +55,5 @@ export const useCryptoFacilities = (): CryptoFacilities => {
   const closeConnection = () => setConnected(false);
   const reopenConnection = () => setConnected(true);
 
-  return { error, closeConnection, reopenConnection };
+  return { error, closeConnection, reopenConnection, book };
 };
