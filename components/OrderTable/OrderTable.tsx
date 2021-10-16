@@ -71,7 +71,12 @@ export const OrderTable = ({
                   column === "price" ? `text-${priceColor}-600` : ""
                 }`}
               >
-                {order[column].toLocaleString()}
+                {column === "price"
+                  ? order[column].toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : order[column].toLocaleString()}
               </td>
             ))}
           </tr>
