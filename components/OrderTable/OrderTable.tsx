@@ -11,6 +11,7 @@ type Props = {
   showHeading?: boolean;
   direction?: Direction;
   orders?: Order[];
+  reverse?: boolean;
 };
 
 const defaultColumnsOrder = ["price", "size", "total"];
@@ -29,6 +30,7 @@ export const OrderTable = ({
   showHeading = true,
   direction = "to left",
   orders = [],
+  reverse = false,
 }: Props) => {
   const priceColor = type === "bid" ? "green" : "red";
   const { isMobile } = useWindowSize();
@@ -39,6 +41,7 @@ export const OrderTable = ({
 
   const highestTotal = orders[orders.length - 1]?.total;
   const getCurrentDepth = getDepth(highestTotal);
+  const sortedOrders = reverse ? [...orders].reverse() : orders;
 
   return (
     <table className="w-screen text-center table-fixed">
@@ -53,7 +56,7 @@ export const OrderTable = ({
       </thead>
 
       <tbody>
-        {orders.map((order) => (
+        {sortedOrders.map((order) => (
           <tr
             key={order.total}
             style={{

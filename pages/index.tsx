@@ -21,7 +21,12 @@ const Home: NextPage = () => {
   );
 
   const AskTable = (
-    <OrderTable type="ask" direction="to right" orders={book.asks} />
+    <OrderTable
+      type="ask"
+      direction="to right"
+      orders={book.asks}
+      reverse={isMobile}
+    />
   );
 
   return (
@@ -35,13 +40,12 @@ const Home: NextPage = () => {
       <Heading>{!isMobile && <Spread book={book} />}</Heading>
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
-        {!isMobile && (
+        {!isMobile ? (
           <>
             {BidTable}
             {AskTable}
           </>
-        )}
-        {isMobile && (
+        ) : (
           <>
             {AskTable}
             <Spread book={book} />
