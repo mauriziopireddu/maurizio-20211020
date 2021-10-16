@@ -3,13 +3,26 @@ import { Heading } from "components/Heading";
 import { OrderTable } from "components/OrderTable";
 import { useWindowSize } from "hooks/useWindowSize";
 import { Spread } from "components/Spread";
-import { ToggleFeed } from "components/ToggleFeed";
 import { useCryptoFacilities } from "hooks/useCryptoFacilities";
+import { Modal } from "components/Modal";
+import { Button } from "components/Button";
+import { usePageVisibility } from "hooks/usePageVisibility";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
+  const isPageVisible = usePageVisibility();
+
+  useEffect(() => {
+    if (!isPageVisible && isConnected) {
+      closeConnection();
+    }
+  }, [isPageVisible]);
+
+  const { closeConnection, reconnect, book, changeContract, isConnected } =
+    useCryptoFacilities();
+
   const limit = isMobile ? 12 : 16;
-  const { closeConnection, reopenConnection, book } = useCryptoFacilities();
 
   const BidTable = (
     <OrderTable
@@ -32,6 +45,7 @@ const Home: NextPage = () => {
 
   return (
     <>
+      {!isConnected && <Modal onClick={reconnect} />}
       <Heading>{!isMobile && <Spread book={book} />}</Heading>
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
@@ -49,13 +63,10 @@ const Home: NextPage = () => {
         )}
       </main>
       <footer className="flex my-4">
-        <ToggleFeed />
+        <Button onClick={changeContract}>Toggle Feed</Button>
       </footer>
       <button type="button" onClick={() => closeConnection()}>
         closeConnection
-      </button>
-      <button type="button" onClick={() => reopenConnection()}>
-        reconnect
       </button>
     </>
   );
