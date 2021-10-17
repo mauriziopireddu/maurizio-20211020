@@ -9,9 +9,11 @@ const cryptoFacilitiesEndpoint = "wss://www.cryptofacilities.com/ws/v1";
 
 type CryptoFacilities = {
   error: boolean;
-  closeConnection: () => void;
-  reconnect: () => void;
-  changeContract: () => void;
+  events: {
+    closeConnection: () => void;
+    reconnect: () => void;
+    changeContract: () => void;
+  };
   book: Book;
   isConnected: boolean;
 };
@@ -57,6 +59,7 @@ export const useCryptoFacilities = (): CryptoFacilities => {
   );
 
   const performance = useDevicePerformance();
+
   useInterval(() => setBook(batchedBook.current), refreshRate[performance]);
 
   const changeContract = () => {
@@ -92,10 +95,12 @@ export const useCryptoFacilities = (): CryptoFacilities => {
 
   return {
     error,
-    closeConnection,
-    reconnect,
+    events: {
+      closeConnection,
+      reconnect,
+      changeContract,
+    },
     book,
-    changeContract,
     isConnected: connected,
   };
 };

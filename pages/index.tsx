@@ -11,10 +11,9 @@ import { useEventListener } from "hooks/useEventListener";
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
 
-  const { closeConnection, reconnect, book, changeContract, isConnected } =
-    useCryptoFacilities();
+  const { book, events: sockEvents, isConnected } = useCryptoFacilities();
 
-  useEventListener("blur", () => closeConnection());
+  useEventListener("blur", () => sockEvents.closeConnection());
 
   const limit = isMobile ? 12 : 16;
 
@@ -39,7 +38,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {!isConnected && <Modal onClick={reconnect} />}
+      {!isConnected && <Modal onClick={sockEvents.reconnect} />}
       <Heading>{!isMobile && <Spread book={book} />}</Heading>
       <hr className="border-gray-700" />
       <main className={isMobile ? "inline" : "flex"}>
@@ -57,7 +56,7 @@ const Home: NextPage = () => {
         )}
       </main>
       <footer className="flex my-4">
-        <Button onClick={changeContract}>Toggle Feed</Button>
+        <Button onClick={sockEvents.changeContract}>Toggle Feed</Button>
       </footer>
     </>
   );
