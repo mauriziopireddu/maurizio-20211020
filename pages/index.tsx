@@ -6,21 +6,15 @@ import { Spread } from "components/Spread";
 import { useCryptoFacilities } from "hooks/useCryptoFacilities";
 import { Modal } from "components/Modal";
 import { Button } from "components/Button";
-import { usePageVisibility } from "hooks/usePageVisibility";
-import { useEffect } from "react";
+import { useEventListener } from "hooks/useEventListener";
 
 const Home: NextPage = () => {
   const { isMobile } = useWindowSize();
-  const isPageVisible = usePageVisibility();
-
-  useEffect(() => {
-    if (!isPageVisible && isConnected) {
-      closeConnection();
-    }
-  }, [isPageVisible]);
 
   const { closeConnection, reconnect, book, changeContract, isConnected } =
     useCryptoFacilities();
+
+  useEventListener("blur", () => closeConnection());
 
   const limit = isMobile ? 12 : 16;
 
