@@ -1,3 +1,6 @@
+import { refreshRate } from "config";
+import { useDevicePerformance } from "hooks/useDevicePerformance";
+import { useInterval } from "hooks/useInterval";
 import { useRef, useState } from "react";
 import useWebSocket from "react-use-websocket";
 import { Book } from "types";
@@ -20,6 +23,7 @@ export const useCryptoFacilities = (): CryptoFacilities => {
   const [error, setError] = useState(false);
   const [connected, setConnected] = useState(true);
   const [book, setBook] = useState<Book>({ bids: [], asks: [] });
+  const batchedBook = useRef<Book>({ bids: [], asks: [] });
 
   const { sendJsonMessage } = useWebSocket(
     cryptoFacilitiesEndpoint,
@@ -44,13 +48,16 @@ export const useCryptoFacilities = (): CryptoFacilities => {
           return;
         }
         if (data.feed === "book_ui_1") {
-          setBook((oldBook) => updateBook(oldBook, data));
+          batchedBook.current = updateBook(batchedBook.current, data);
           return;
         }
       },
     },
     connected
   );
+
+  const performance = useDevicePerformance();
+  useInterval(() => setBook(batchedBook.current), refreshRate[performance]);
 
   const changeContract = () => {
     const newProductId: ProductId =
