@@ -1,9 +1,9 @@
-import { refreshRate } from "config";
-import { useDevicePerformance } from "hooks/useDevicePerformance";
+import { useCallback, useMemo, useRef, useState } from "react";
 import throttle from "lodash/throttle";
-import { useMemo, useRef, useState } from "react";
 import useWebSocket from "react-use-websocket";
+import { useDevicePerformance } from "hooks/useDevicePerformance";
 import { Book, ProductId } from "types";
+import { refreshRate } from "config";
 import { CryptoFacilities, MessageData, Queues } from "./types";
 import { createBook, processQueues, updateQueues } from "./utils";
 
@@ -22,8 +22,7 @@ export const useCryptoFacilities = (): CryptoFacilities => {
   const updateBook = useMemo(
     () =>
       throttle(() => {
-        const newBook = processQueues(book, deltaQueues.current);
-        setBook(newBook);
+        setBook((oldBook) => processQueues(oldBook, deltaQueues.current));
         deltaQueues.current = emptyQueues;
       }, refreshRate[performance]),
     [performance]
