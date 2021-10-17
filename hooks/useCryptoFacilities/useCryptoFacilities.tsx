@@ -1,31 +1,33 @@
 import { refreshRate } from "config";
 import { useDevicePerformance } from "hooks/useDevicePerformance";
-import { useInterval } from "hooks/useInterval";
-import { useRef, useState } from "react";
+import throttle from "lodash/throttle";
+import { useMemo, useRef, useState } from "react";
 import useWebSocket from "react-use-websocket";
-import { Book } from "types";
-import { createBook, MessageData, updateBook } from "./utils";
+import { Book, ProductId } from "types";
+import { CryptoFacilities, MessageData, Queues } from "./types";
+import { createBook, processQueues, updateQueues } from "./utils";
+
 const cryptoFacilitiesEndpoint = "wss://www.cryptofacilities.com/ws/v1";
 
-type CryptoFacilities = {
-  error: boolean;
-  events: {
-    closeConnection: () => void;
-    reconnect: () => void;
-    changeContract: () => void;
-  };
-  book: Book;
-  isConnected: boolean;
-};
-
-type ProductId = "PI_XBTUSD" | "PI_ETHUSD";
+const emptyQueues = { asks: {}, bids: {} };
+const emptyBook = { bids: [], asks: [] };
 
 export const useCryptoFacilities = (): CryptoFacilities => {
   const productRef = useRef<ProductId>("PI_XBTUSD");
-  const [error, setError] = useState(false);
   const [connected, setConnected] = useState(true);
-  const [book, setBook] = useState<Book>({ bids: [], asks: [] });
-  const batchedBook = useRef<Book>({ bids: [], asks: [] });
+  const [book, setBook] = useState<Book>(emptyBook);
+  const performance = useDevicePerformance();
+  const deltaQueues = useRef<Queues>({ bids: {}, asks: {} });
+
+  const updateBook = useMemo(
+    () =>
+      throttle(() => {
+        const newBook = processQueues(book, deltaQueues.current);
+        setBook(newBook);
+        deltaQueues.current = emptyQueues;
+      }, refreshRate[performance]),
+    [performance]
+  );
 
   const { sendJsonMessage } = useWebSocket(
     cryptoFacilitiesEndpoint,
@@ -37,9 +39,6 @@ export const useCryptoFacilities = (): CryptoFacilities => {
           product_ids: [productRef.current],
         });
       },
-      onError: () => {
-        setError(true);
-      },
       onMessage: (message) => {
         const data: MessageData = JSON.parse(message.data);
         if (data.event) {
@@ -50,17 +49,14 @@ export const useCryptoFacilities = (): CryptoFacilities => {
           return;
         }
         if (data.feed === "book_ui_1") {
-          batchedBook.current = updateBook(batchedBook.current, data);
+          deltaQueues.current = updateQueues(deltaQueues.current, data);
+          updateBook();
           return;
         }
       },
     },
     connected
   );
-
-  const performance = useDevicePerformance();
-
-  useInterval(() => setBook(batchedBook.current), refreshRate[performance]);
 
   const changeContract = () => {
     const newProductId: ProductId =
@@ -71,6 +67,9 @@ export const useCryptoFacilities = (): CryptoFacilities => {
       feed: "book_ui_1",
       product_ids: [productRef.current],
     });
+
+    deltaQueues.current = emptyQueues;
+    setBook(emptyBook);
 
     sendJsonMessage({
       event: "subscribe",
@@ -94,13 +93,12 @@ export const useCryptoFacilities = (): CryptoFacilities => {
   };
 
   return {
-    error,
+    book,
+    isConnected: connected,
     events: {
       closeConnection,
       reconnect,
       changeContract,
     },
-    book,
-    isConnected: connected,
   };
 };

@@ -1,20 +1,7 @@
-import { Book, Order, ProductId } from "types";
-export type Feed = "book_ui_1_snapshot" | "book_ui_1";
+import { Book, Order } from "types";
+import { MessageData, Queue, Queues } from "./types";
 
-export type MessageData = {
-  numLevels: number;
-  feed: Feed;
-  bids: [[number, number]];
-  asks: [[number, number]];
-  product_id: ProductId;
-  event?:
-    | "subscribed"
-    | "subscribed_failed"
-    | "unsubscribed"
-    | "unsubscribed_failed";
-};
-
-const getFormattedOrders = (rawOrders: [[number, number]]): Order[] => {
+const getFormattedOrders = (rawOrders: [number, number][]): Order[] => {
   return rawOrders.map(([price, size]) => {
     return { size, price, total: 0 };
   });
@@ -32,23 +19,25 @@ const calculateTotal = (orders: Order[]): Order[] => {
 export const createBook = (data: MessageData): Book => {
   const bids = calculateTotal(getFormattedOrders(data.bids));
   const asks = calculateTotal(getFormattedOrders(data.asks));
-  const book: Book = { bids, asks };
 
-  return book;
+  return { bids, asks };
 };
 
 const updateOrders = (
   orders: Order[],
-  delta: [[number, number]],
+  queue: Queue,
   sort: "asc" | "desc"
 ): Order[] => {
   let shouldSort = false;
-  delta.map(([price, newSize]) => {
+  Object.entries(queue).map(([key, newSize]) => {
+    const price = +key;
     const index = orders.findIndex((order) => order.price === price);
     const orderNotFound = index === -1;
-    if (orderNotFound && newSize > 0) {
-      orders.push({ price, size: newSize, total: 0 });
-      shouldSort = true;
+    if (orderNotFound) {
+      if (newSize > 0) {
+        orders.push({ price, size: newSize, total: 0 });
+        shouldSort = true;
+      }
       return;
     }
     if (newSize === 0) {
@@ -66,12 +55,23 @@ const updateOrders = (
   return orders;
 };
 
-export const updateBook = (book: Book, delta: MessageData): Book => {
-  const bids = updateOrders([...book.bids], [...delta.bids], "desc");
-  const asks = updateOrders([...book.asks], [...delta.asks], "asc");
+const updateQueue = (queue: Queue, update: [number, number][]): Queue => {
+  update.map(([price, newSize]) => (queue[price] = newSize));
+  return queue;
+};
 
-  const newBids = calculateTotal(bids);
-  const newAsks = calculateTotal(asks);
+export const updateQueues = (queue: Queues, updates: MessageData): Queues => {
+  const asks = updateQueue({ ...queue.asks }, updates.asks);
+  const bids = updateQueue({ ...queue.bids }, updates.bids);
+  return { asks, bids };
+};
 
-  return { asks: newAsks, bids: newBids };
+export const processQueues = (book: Book, queue: Queues): Book => {
+  const bids = updateOrders([...book.bids], { ...queue.bids }, "desc");
+  const asks = updateOrders([...book.asks], { ...queue.asks }, "asc");
+
+  const bidsWithTotal = calculateTotal(bids);
+  const asksWithTotal = calculateTotal(asks);
+
+  return { asks: asksWithTotal, bids: bidsWithTotal };
 };

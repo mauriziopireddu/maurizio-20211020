@@ -10,3 +10,5 @@ export type Book = {
   bids: Order[];
   asks: Order[];
 };
+
+export type Delta = [number, number];
