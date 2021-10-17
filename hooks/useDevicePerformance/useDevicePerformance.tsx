@@ -1,17 +1,23 @@
+import { useEffect, useRef, useState } from "react";
+
 export type DevicePerformance = "low" | "medium" | "high";
 
 export const useDevicePerformance = (): DevicePerformance => {
-  // @ts-ignore
-  const ram = navigator.deviceMemory ?? 4;
-  const cpu = navigator.hardwareConcurrency ?? 2;
+  const devicePerformance = useRef<DevicePerformance>("medium");
 
-  if (ram > 4 && cpu > 2) {
-    return "high";
-  }
+  useEffect(() => {
+    // @ts-ignore
+    const ram = navigator?.deviceMemory ?? 4;
+    const cpu = navigator?.hardwareConcurrency ?? 2;
 
-  if (cpu === 1 && ram <= 2) {
-    return "low";
-  }
+    if (ram > 4 && cpu > 2) {
+      devicePerformance.current = "high";
+    } else if (cpu === 1 && ram <= 2) {
+      devicePerformance.current = "low";
+    } else {
+      devicePerformance.current = "medium";
+    }
+  }, []);
 
-  return "medium";
+  return devicePerformance.current;
 };
