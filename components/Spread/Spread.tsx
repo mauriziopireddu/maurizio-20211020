@@ -1,5 +1,5 @@
 import { Book } from "types";
-import { SpreadWarningMessage } from "./SpreadWarningMessage";
+import { SpreadMessage } from "./SpreadMessage";
 
 type Props = {
   book: Book;
@@ -9,12 +9,16 @@ export const Spread = ({ book }: Props) => {
   const lowestAsk = book.asks[0]?.price;
   const highestBid = book.bids[0]?.price;
 
+  if (!book.asks.length && !book.bids.length) {
+    return <SpreadMessage>Spread: N/A</SpreadMessage>;
+  }
+
   if (!book.asks.length) {
-    return <SpreadWarningMessage>No asks available</SpreadWarningMessage>;
+    return <SpreadMessage>No asks available</SpreadMessage>;
   }
 
   if (!book.bids.length) {
-    return <SpreadWarningMessage>No bids available</SpreadWarningMessage>;
+    return <SpreadMessage>No bids available</SpreadMessage>;
   }
 
   const spreadValue = lowestAsk - highestBid;
@@ -24,14 +28,11 @@ export const Spread = ({ book }: Props) => {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
+
   const percentage = percentageValue.toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
-  return (
-    <p className="m-auto text-secondary text-center">
-      Spread: {spread} ({percentage}%)
-    </p>
-  );
+  return <SpreadMessage>{`Spread: ${spread} (${percentage}%)`}</SpreadMessage>;
 };
