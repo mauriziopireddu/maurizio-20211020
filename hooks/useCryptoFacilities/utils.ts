@@ -29,6 +29,7 @@ const updateOrders = (
   sort: "asc" | "desc"
 ): Order[] => {
   let shouldSort = false;
+
   Object.entries(queue).map(([key, newSize]) => {
     const price = +key;
     const index = orders.findIndex((order) => order.price === price);
@@ -52,6 +53,7 @@ const updateOrders = (
       sort === "asc" ? a.price - b.price : b.price - a.price
     );
   }
+
   return orders;
 };
 

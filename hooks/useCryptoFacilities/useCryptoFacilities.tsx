@@ -10,12 +10,11 @@ import { createBook, processQueues, updateQueues } from "./utils";
 const cryptoFacilitiesEndpoint = "wss://www.cryptofacilities.com/ws/v1";
 
 const emptyQueues = { asks: {}, bids: {} };
-const emptyBook = { bids: [], asks: [] };
 
 export const useCryptoFacilities = (): CryptoFacilities => {
   const productRef = useRef<ProductId>("PI_XBTUSD");
   const [connected, setConnected] = useState(true);
-  const [book, setBook] = useState<Book>(emptyBook);
+  const [book, setBook] = useState<Book>({ bids: [], asks: [] });
   const performance = useDevicePerformance();
   const deltaQueues = useRef<Queues>({ bids: {}, asks: {} });
 
@@ -44,6 +43,7 @@ export const useCryptoFacilities = (): CryptoFacilities => {
           return;
         }
         if (data.feed === "book_ui_1_snapshot") {
+          deltaQueues.current = emptyQueues;
           setBook(createBook(data));
           return;
         }
@@ -66,9 +66,6 @@ export const useCryptoFacilities = (): CryptoFacilities => {
       feed: "book_ui_1",
       product_ids: [productRef.current],
     });
-
-    deltaQueues.current = emptyQueues;
-    setBook(emptyBook);
 
     sendJsonMessage({
       event: "subscribe",

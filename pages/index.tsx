@@ -9,12 +9,9 @@ import { Button } from "components/Button";
 import { useEventListener } from "hooks/useEventListener";
 
 const Home: NextPage = () => {
-  const { isMobile } = useWindowSize();
-
   const { book, events: sockEvents, isConnected } = useCryptoFacilities();
-
   useEventListener("blur", () => sockEvents.closeConnection());
-
+  const { isMobile } = useWindowSize();
   const limit = isMobile ? 12 : 16;
 
   const BidTable = (
