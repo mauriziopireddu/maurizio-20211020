@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-export const useEventListener = <T extends HTMLElement = HTMLDivElement>(
+export const useEventListener = (
   eventName: keyof WindowEventMap,
-  eventListener: (event: Event) => void
+  eventListener: () => void
 ) => {
   useEffect(() => {
     window.addEventListener(eventName, eventListener);

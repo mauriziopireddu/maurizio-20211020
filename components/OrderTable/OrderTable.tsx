@@ -1,8 +1,6 @@
-import { useWindowSize } from "hooks/useWindowSize";
 import { Order } from "types";
 import { Head } from "./Head";
 
-type Type = "bid" | "ask";
 type DepthDirection = "to left" | "to right";
 type Column = "total" | "size" | "price";
 

@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import { Heading } from "components/Heading";
 import { OrderTable, Props as OrderTableProps } from "components/OrderTable";
 import { useWindowSize } from "hooks/useWindowSize";

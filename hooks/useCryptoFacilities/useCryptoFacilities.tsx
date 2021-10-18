@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import throttle from "lodash/throttle";
 import useWebSocket from "react-use-websocket";
 import { useDevicePerformance } from "hooks/useDevicePerformance";
