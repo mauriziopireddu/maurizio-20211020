@@ -43,4 +43,21 @@ describe("Spread", () => {
     render(<Spread book={book} />);
     expect(screen.getByText("Spread: 3.0 (75.00%)")).toBeVisible();
   });
+
+  it("handles the case where the lowest ask is 0", () => {
+    const book: Book = {
+      bids: [
+        { price: 1, size: 100, total: 100 },
+        { price: 2, size: 150, total: 250 },
+        { price: 3, size: 200, total: 450 },
+      ],
+      asks: [
+        { price: 0, size: 100, total: 100 },
+        { price: 5, size: 150, total: 250 },
+        { price: 6, size: 200, total: 450 },
+      ],
+    };
+    render(<Spread book={book} />);
+    expect(screen.getByText("Spread: -1.0 (0.00%)")).toBeVisible();
+  });
 });
