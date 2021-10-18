@@ -62,9 +62,10 @@ const updateQueue = (queue: Queue, update: [number, number][]): Queue => {
   return queue;
 };
 
-export const updateQueues = (queue: Queues, updates: MessageData): Queues => {
-  const asks = updateQueue({ ...queue.asks }, updates.asks);
-  const bids = updateQueue({ ...queue.bids }, updates.bids);
+export const updateQueues = (queues: Queues, updates: MessageData): Queues => {
+  const asks = updateQueue({ ...queues.asks }, updates.asks);
+  const bids = updateQueue({ ...queues.bids }, updates.bids);
+
   return { asks, bids };
 };
 
