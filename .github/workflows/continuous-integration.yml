@@ -13,11 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install dependencies 🔎
         run: yarn
 
-      - name: Build
+      - name: Build 📦
         run: yarn build
 
-      - name: Unit tests
+      - name: Unit tests 🧪
         run: yarn test
