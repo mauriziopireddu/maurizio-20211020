@@ -1,5 +1,5 @@
 export const refreshRate = {
-  low: 1500,
-  medium: 1000,
-  high: 500,
+  low: 1200,
+  medium: 500,
+  high: 250,
 };

@@ -10,9 +10,9 @@ const breakpoint = 640;
 
 export const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState({
-    width: 0,
-    height: 0,
-    isMobile: true,
+    width: 1600,
+    height: 873,
+    isMobile: false,
   });
 
   useEffect(() => {
