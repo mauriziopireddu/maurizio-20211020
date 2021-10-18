@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 type Props = {
-  children: ReactNode;
+  children: ReactNode | string;
 };
 
 export const Heading = ({ children }: Props) => {
