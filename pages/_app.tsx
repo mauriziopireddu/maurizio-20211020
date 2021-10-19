@@ -7,7 +7,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>Maurizio | 2021-10-17</title>
+        <title>Maurizio | 2021-10-20</title>
       </Head>
       <div className="bg-black h-screen text-white">
         <Component {...pageProps} />
