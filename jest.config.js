@@ -10,10 +10,10 @@ module.exports = {
   clearMocks: true,
   coverageThreshold: {
     global: {
-      statements: 88,
-      branches: 76,
-      functions: 88,
-      lines: 89,
+      statements: 95,
+      branches: 82,
+      functions: 91,
+      lines: 96,
     },
   },
 };
