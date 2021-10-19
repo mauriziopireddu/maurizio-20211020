@@ -11,7 +11,7 @@ const orders: Order[] = [
 
 const props: OrderTableProps = {
   priceColor: "green-600",
-  depthColor: "#123534",
+  depthColor: "rgba(0,132,100,.3)",
   orders,
 };
 

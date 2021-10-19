@@ -1,13 +1,13 @@
 import { Order } from "types";
 import { Head } from "./Head";
 
-type DepthDirection = "to left" | "to right";
+type DepthDirection = "left" | "right";
 type Column = "total" | "size" | "price";
 
 export type Props = {
   orders: Order[];
   priceColor: "green-600" | "red-600";
-  depthColor: "#123534" | "#3D1E28";
+  depthColor: "rgba(0,132,100,.3)" | "rgba(160,55,55,.3)";
   isMobile?: boolean;
   customColumnsOrder?: Column[];
   showHeading?: boolean;
@@ -18,18 +18,23 @@ export type Props = {
 const defaultColumnsOrder = ["price", "size", "total"];
 
 const depthStyle = (
-  depthColor: string,
+  color: string,
   size: number,
   direction: DepthDirection
-) => `linear-gradient(${direction}, ${depthColor} ${size}%, transparent 0%)`;
+) => ({
+  position: "absolute",
+  width: "auto",
+  background: color,
+  inset: direction === "left" ? `0 0 0 ${size}%` : `0 ${size}% 0 0`,
+});
 
 const getDepth = (total: number) => (current: number) =>
-  (current / total) * 100;
+  (1 - current / total) * 100;
 
 export const OrderTable = ({
   customColumnsOrder = [],
   showHeading = true,
-  depthDirection = "to left",
+  depthDirection = "left",
   orders = [],
   isMobile = false,
   priceColor,
@@ -46,20 +51,11 @@ export const OrderTable = ({
   const sortedOrders = reverse ? [...orders].reverse() : orders;
 
   return (
-    <table className="w-screen text-center table-fixed">
+    <table className="w-screen text-center">
       <Head columns={columns} showHeading={showHeading} />
       <tbody>
         {sortedOrders.map((order) => (
-          <tr
-            key={order.price}
-            style={{
-              background: depthStyle(
-                depthColor,
-                getCurrentDepth(order.total),
-                depthDirection
-              ),
-            }}
-          >
+          <tr key={order.price} className="relative">
             {columns.map((column) => (
               <td
                 key={`${order.total}-${column}`}
@@ -81,6 +77,14 @@ export const OrderTable = ({
                 })()}
               </td>
             ))}
+            <td
+              // @ts-ignore
+              style={depthStyle(
+                depthColor,
+                getCurrentDepth(order.total),
+                depthDirection
+              )}
+            ></td>
           </tr>
         ))}
       </tbody>

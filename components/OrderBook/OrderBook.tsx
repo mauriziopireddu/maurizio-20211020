@@ -19,19 +19,19 @@ export const OrderBook = () => {
   const bidsTable: OrderTableProps = {
     orders: bids,
     customColumnsOrder: ["total", "size", "price"],
-    depthDirection: isMobile ? "to right" : "to left",
+    depthDirection: isMobile ? "right" : "left",
     showHeading: !isMobile,
     isMobile,
     priceColor: "green-600",
-    depthColor: "#123534",
+    depthColor: "rgba(0,132,100,.3)",
   };
 
   const asksTable: OrderTableProps = {
     orders: asks,
-    depthDirection: "to right",
+    depthDirection: "right",
     isMobile: isMobile,
     priceColor: "red-600",
-    depthColor: "#3D1E28",
+    depthColor: "rgba(160,55,55,.3)",
     reverse: isMobile,
   };
 
@@ -49,7 +49,7 @@ export const OrderBook = () => {
         ) : (
           <>
             <OrderTable {...asksTable} />
-            <Spread book={book} />
+            <Spread className="my-2" book={book} />
             <OrderTable {...bidsTable} />
           </>
         )}
