@@ -5,8 +5,9 @@ module.exports = {
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
   },
-  moduleDirectories: ["node_modules", "."],
+  moduleDirectories: ["node_modules", "<rootDir>/node_modules", "."],
   testEnvironment: "jsdom",
+  clearMocks: true,
   coverageThreshold: {
     global: {
       branches: 60,

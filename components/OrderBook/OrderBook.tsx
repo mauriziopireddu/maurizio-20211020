@@ -1,11 +1,11 @@
 import { Heading } from "components/Heading";
 import { OrderTable, Props as OrderTableProps } from "components/OrderTable";
-import { useWindowSize } from "hooks/useWindowSize";
 import { Spread } from "components/Spread";
-import { useCryptoFacilities } from "hooks/useCryptoFacilities";
 import { Modal } from "components/Modal";
 import { Button } from "components/Button";
+import { useCryptoFacilities } from "hooks/useCryptoFacilities";
 import { useEventListener } from "hooks/useEventListener";
+import { useWindowSize } from "hooks/useWindowSize";
 
 export const OrderBook = () => {
   const { book, events: sockEvents, isConnected } = useCryptoFacilities();

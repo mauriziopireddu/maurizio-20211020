@@ -6,9 +6,9 @@ type Column = "total" | "size" | "price";
 
 export type Props = {
   orders: Order[];
-  isMobile: boolean;
   priceColor: "green-600" | "red-600";
   depthColor: "#123534" | "#3D1E28";
+  isMobile?: boolean;
   customColumnsOrder?: Column[];
   showHeading?: boolean;
   depthDirection?: DepthDirection;
