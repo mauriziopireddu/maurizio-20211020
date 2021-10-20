@@ -22,8 +22,6 @@ const depthStyle = (
   size: number,
   direction: DepthDirection
 ) => ({
-  position: "absolute",
-  width: "auto",
   background: color,
   inset: direction === "left" ? `0 0 0 ${size}%` : `0 ${size}% 0 0`,
 });
@@ -78,7 +76,7 @@ export const OrderTable = ({
               </td>
             ))}
             <td
-              // @ts-ignore
+              className="absolute w-auto"
               style={depthStyle(
                 depthColor,
                 getCurrentDepth(order.total),
