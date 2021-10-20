@@ -10,6 +10,7 @@ const orders: Order[] = [
 ];
 
 const props: OrderTableProps = {
+  id: "bids",
   priceColor: "green-600",
   depthColor: "rgba(0,132,100,.3)",
   orders,

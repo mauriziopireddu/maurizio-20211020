@@ -5,6 +5,7 @@ type DepthDirection = "left" | "right";
 type Column = "total" | "size" | "price";
 
 export type Props = {
+  id: string;
   orders: Order[];
   priceColor: "green-600" | "red-600";
   depthColor: "rgba(0,132,100,.3)" | "rgba(160,55,55,.3)";
@@ -30,6 +31,7 @@ const getDepth = (total: number) => (current: number) =>
   (1 - current / total) * 100;
 
 export const OrderTable = ({
+  id,
   customColumnsOrder = [],
   showHeading = true,
   depthDirection = "left",
@@ -56,7 +58,7 @@ export const OrderTable = ({
           <tr key={order.price} className="relative">
             {columns.map((column) => (
               <td
-                key={`${order.total}-${column}`}
+                key={`${id}-${column}`}
                 className={`py-0.5 ${
                   column === "price" ? `text-${priceColor}` : ""
                 }`}

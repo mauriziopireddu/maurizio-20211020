@@ -17,6 +17,7 @@ export const OrderBook = () => {
   const asks = book.asks.slice(0, limit);
 
   const bidsTable: OrderTableProps = {
+    id: "bids",
     orders: bids,
     customColumnsOrder: ["total", "size", "price"],
     depthDirection: isMobile ? "right" : "left",
@@ -27,6 +28,7 @@ export const OrderBook = () => {
   };
 
   const asksTable: OrderTableProps = {
+    id: "asks",
     orders: asks,
     depthDirection: "right",
     isMobile: isMobile,
